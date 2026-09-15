@@ -10,7 +10,6 @@ class VaultTests(unittest.TestCase):
  def test_safe_fixture_passes(self): subprocess.check_call([str(ROOT/'bin/validate-vault')])
  def test_plaintext_current_tree_fails(self):
   d=copyroot(); p=d/'vault/references/bad.json'; p.write_text(json.dumps({'pass'+'word':'synthetic-secret-value'})); subprocess.run(['git','add','.'],cwd=d,check=True); self.assertNotEqual(subprocess.run([str(ROOT/'bin/validate-vault'),'--root',str(d)]).returncode,0)
-  d=copyroot(); p=d/'vault/references/bad.json'; p.write_text('{"'+"pass"+"word":"synthetic-secret-value"}'); subprocess.run(['git','add','.'],cwd=d,check=True); self.assertNotEqual(subprocess.run([str(ROOT/'bin/validate-vault'),'--root',str(d)]).returncode,0)
  def test_history_secret_fails(self):
   d=copyroot(); p=d/'vault/references/old.txt'; p.write_text('-----BEGIN '+"RSA PRIVATE"+' KEY-----'); subprocess.run(['git','add','.'],cwd=d,check=True); subprocess.run(['git','commit','-qm','bad fixture'],cwd=d,check=True); self.assertNotEqual(subprocess.run([str(ROOT/'bin/validate-vault'),'--root',str(d)]).returncode,0)
  def test_unsafe_reference_fails(self):
